@@ -60,8 +60,7 @@ object SdbParser {
     fun serialize(prefix: String, records: List<Map<String, String>>): String {
         return buildString {
             records.forEachIndexed { i, record ->
-                val id = record["id"] ?: i.toString()
-                appendLine("[$prefix:$id]")
+                appendLine("[$prefix]")
                 record.forEach { (k, v) -> appendLine("$k=$v") }
                 appendLine()
             }
