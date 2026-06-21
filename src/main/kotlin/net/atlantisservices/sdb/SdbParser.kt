@@ -79,10 +79,15 @@ object SdbParser {
      */
     fun serializeValue(value: Any?): String = when (value) {
         null -> ""
-        is Collection<*> -> value.joinToString(",") { it?.toString() ?: "" }
-        is Map<*, *> -> value.entries.joinToString(",") { (k, v) -> "${k}:${v}" }
-        is Array<*> -> value.joinToString(",") { it?.toString() ?: "" }
-        else -> value.toString()
+
+        is Collection<*> -> value.joinToString(",") { serializeValue(it) }
+        is Array<*> -> value.joinToString(",") { serializeValue(it) }
+        is Map<*, *> -> value.entries.joinToString(",") { "${it.key}:${it.value}" }
+
+        else -> {
+            val serializer = SdbSerializers.get(value::class.java) as? SdbSerializer<Any>
+            serializer?.serialize(value) ?: value.toString()
+        }
     }
 
     /**

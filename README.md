@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.atlantisservices:sdb:1.0.0'
+    implementation 'net.atlantisservices:sdb:1.0.2'
 }
 ```
 
@@ -53,19 +53,44 @@ users.count()
 | `Array<T>` | Comma-separated |
 | `Map<K, V>` | `key:value` pairs, comma-separated |
 
+## Custom Type Support (Serializers)
+
+SDB supports custom types through pluggable serializers.
+
+### Create a serializer
+
+```kotlin
+object UUIDSerializer : SdbSerializer<UUID> {
+
+    override fun serialize(value: UUID): String =
+        value.toString()
+
+    override fun deserialize(raw: String): UUID =
+        UUID.fromString(raw)
+}
+```
+
+### Register the serializer
+```kotlin
+SdbSerializers.register(UUID::class.java, UUIDSerializer)
+```
+
 ## File Format
 
 Records are stored in `.sdb` files as human-readable blocks:
+```
 [user:1]
 id=1
 username=selixe
 roles=ADMIN,MOD
 metadata=theme:dark,lang:en
+
 [user:2]
 id=2
 username=john
 roles=USER
 metadata=
+```
 
 ## License
 

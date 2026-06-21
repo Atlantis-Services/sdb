@@ -156,7 +156,10 @@ class SdbRepository<T : Any>(
                     coercePrimitive(it.key, keyType) to coercePrimitive(it.value, valType)
                 }
             }
-            else -> value
+            else -> {
+                val serializer = SdbSerializers.get(classifier.java)
+                serializer?.deserialize(value) ?: value
+            }
         }
     }
 
